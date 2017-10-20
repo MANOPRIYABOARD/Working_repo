@@ -1,0 +1,75 @@
+From 98fee44ed199e9a6ce00bb78ff7f91d1149d3bff Mon Sep 17 00:00:00 2001
+From: Mathanraj <mathan.raj@seco.com>
+Date: Fri, 23 Jun 2017 11:20:48 +0530
+Subject: [PATCH] Added USB Support
+
+---
+ board/seco/SBC_984/mx6seco_984.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/board/seco/SBC_984/mx6seco_984.c b/board/seco/SBC_984/mx6seco_984.c
+index c2cd93b..cc80d0b 100755
+--- a/board/seco/SBC_984/mx6seco_984.c
++++ b/board/seco/SBC_984/mx6seco_984.c
+@@ -203,18 +203,24 @@ int check_mmc_autodetect (void) {
+  */
+ #ifdef CONFIG_USB_EHCI_MX6
+ 
+-#define USB_HOST1_PWR     IMX_GPIO_NR(7, 12)
+-#define USB_OTG_PWR       IMX_GPIO_NR(3, 22)
++#define USB_HOST1_PWR                            IMX_GPIO_NR(7, 12)
++#define USB_OTG_PWR                              IMX_GPIO_NR(3, 22)
++
++
++#define USB_OTHERREGS_OFFSET                     0x800
++#define UCTRL_PWR_POL                            (1 << 9)
+ 
+ 
+ int board_ehci_hcd_init (int port) {
++	u32 *usbnc_usb_ctrl;
++
+ 	switch (port) {
+ 	case 0:
+ 		imx_iomux_v3_setup_multiple_pads(usb_otg_pads,
+ 			ARRAY_SIZE(usb_otg_pads));
+ 
+ 		/*set daisy chain for otg_pin_id on 6q. for 6dl, this bit is reserved*/
+-		mxc_iomux_set_gpr_register(1, 13, 1, 0);
++		imx_iomux_set_gpr_register (1, 13, 1, 0);
+ 		break;
+ 	case 1:
+ 		imx_iomux_v3_setup_multiple_pads(usb_hc1_pads,
+@@ -222,8 +228,14 @@ int board_ehci_hcd_init (int port) {
+ 		break;
+ 	default:
+ 		printf("MXC USB port %d not yet supported\n", port);
+-		return 1;
++		return -EINVAL;
+ 	}
++
++	usbnc_usb_ctrl = (u32 *)(USB_BASE_ADDR + USB_OTHERREGS_OFFSET +
++			port * 4);
++
++	setbits_le32(usbnc_usb_ctrl, UCTRL_PWR_POL);
++
+ 	return 0;
+ }
+ 
+@@ -244,12 +256,13 @@ int board_ehci_power (int port, int on) {
+ 		break;
+ 	default:
+ 		printf("MXC USB port %d not yet supported\n", port);
+-		return 1;
++		return -EINVAL;
+ 	}
+ 	return 0;
+ }
+ 
+ #endif  /*  CONFIG_USB_EHCI_MX6  */
++
+ /*  __________________________________________________________________________
+  * |__________________________________________________________________________|
+  */
+-- 
+2.0.4
+
