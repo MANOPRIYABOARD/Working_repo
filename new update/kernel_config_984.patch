@@ -1,0 +1,84 @@
+From 5ddabce34e425713216e58892526dcda5d7f5da1 Mon Sep 17 00:00:00 2001
+From: Mathanraj <mathan.raj@seco.com>
+Date: Fri, 23 Jun 2017 10:54:24 +0530
+Subject: [PATCH] Added SBC-984 board support in Kconfig file
+
+---
+ arch/arm/Kconfig   | 5 +++++
+ board/seco/Kconfig | 8 ++++++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
+ mode change 100644 => 100755 arch/arm/Kconfig
+ mode change 100644 => 100755 board/seco/Kconfig
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+old mode 100644
+new mode 100755
+index 6e7534e..b24429d
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -546,6 +546,11 @@ config TARGET_MX6SECO_USBC_A62
+ 	select SECO_SYSTEM
+ 	select SUPPORT_SPL
+ 
++config TARGET_MX6SECO_USBC_984
++	bool "Support Seco uSBC (984) Board"
++	select CPU_V7
++	select SECO_SYSTEM
++	select SUPPORT_SPL
+ 
+ config TARGET_MX6SECO_UQ7_J_A75
+ 	bool "Support Seco uQ7-J (A75) Board"
+diff --git a/board/seco/Kconfig b/board/seco/Kconfig
+old mode 100644
+new mode 100755
+index 600d9cc..80615fa
+--- a/board/seco/Kconfig
++++ b/board/seco/Kconfig
+@@ -1,4 +1,4 @@
+-if TARGET_MX6SECO_Q7_928 || TARGET_MX6SECO_UQ7_962 || TARGET_MX6SECO_USBC_A62 || TARGET_MX6SECO_UQ7_J_A75
++if TARGET_MX6SECO_Q7_928 || TARGET_MX6SECO_UQ7_962 || TARGET_MX6SECO_USBC_A62 || TARGET_MX6SECO_USBC_984 || TARGET_MX6SECO_UQ7_J_A75
+ 
+ 
+ config SYS_SOC
+@@ -14,7 +14,7 @@ config SYS_BOARD
+ 	default "uq7_962"         if TARGET_MX6SECO_UQ7_962
+ 	default "uq7-j_A75"       if TARGET_MX6SECO_UQ7_J_A75
+ 	default "SBC_A62"         if TARGET_MX6SECO_USBC_A62
+-
++	default "SBC_984"         if TARGET_MX6SECO_USBC_984
+ 
+ 
+ 
+@@ -69,6 +69,7 @@ config SYS_CONFIG_NAME
+ 	default "mx6seco_uq7_962"         if TARGET_MX6SECO_UQ7_962
+ 	default "mx6seco_uq7-j_A75"       if TARGET_MX6SECO_UQ7_J_A75
+ 	default "mx6seco_SBC_A62"         if TARGET_MX6SECO_USBC_A62
++	default "mx6seco_SBC_984"         if TARGET_MX6SECO_USBC_984
+ 
+ 
+ config IMX_CONFIG
+@@ -76,6 +77,7 @@ config IMX_CONFIG
+ 	default "board/seco/ddr/mx6_uq7_962_ram.cfg"         if TARGET_MX6SECO_UQ7_962
+ 	default "board/seco/ddr/mx6_uq7-j_A75_ram.cfg"       if TARGET_MX6SECO_UQ7_J_A75
+ 	default "board/seco/ddr/mx6_SBC_A62_ram.cfg"         if TARGET_MX6SECO_USBC_A62
++	default "board/seco/ddr/mx6_SBC_984_ram.cfg"         if TARGET_MX6SECO_USBC_984
+ 
+ 
+ config DEFAULT_FDT_FILE
+@@ -85,11 +87,13 @@ config DEFAULT_FDT_FILE
+ 	default "imx6q-seco_uq7_962.dtb"          if TARGET_MX6SECO_UQ7_962 && SECOMX6Q
+ 	default "imx6q-seco_uq7-j_A75.dtb"        if TARGET_MX6SECO_UQ7_J_A75 && SECOMX6Q
+ 	default "imx6q-seco_SBC_A62.dtb"	  if TARGET_MX6SECO_USBC_A62 && SECOMX6Q
++	default "imx6q-seco_SBC_984.dtb"	  if TARGET_MX6SECO_USBC_984 && SECOMX6Q
+ 	default "imx6qp-seco_SBC_A62.dtb"	  if TARGET_MX6SECO_USBC_A62 && SECOMX6QP
+ 	default "imx6dl-seco_quadmo747_928.dtb"   if TARGET_MX6SECO_Q7_928 && (SECOMX6DL || SECOMX6S)
+ 	default "imx6dl-seco_uq7_962.dtb"         if TARGET_MX6SECO_UQ7_962 && (SECOMX6DL || SECOMX6S)
+ 	default "imx6dl-seco_uq7-j_A75.dtb"       if TARGET_MX6SECO_UQ7_J_A75 && (SECOMX6DL || SECOMX6S)
+ 	default "imx6dl-seco_SBC_A62.dtb"         if TARGET_MX6SECO_USBC_A62 && (SECOMX6DL || SECOMX6S)
++	default "imx6dl-seco_SBC_984.dtb"         if TARGET_MX6SECO_USBC_984 && (SECOMX6DL || SECOMX6S)
+ 	
+ 
+ 
+-- 
+2.0.4
+
