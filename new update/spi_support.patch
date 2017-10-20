@@ -1,0 +1,28 @@
+From 2dddb899b70e97ca8d6c387518db9699866f7d36 Mon Sep 17 00:00:00 2001
+From: Mathanraj <mathan.raj@seco.com>
+Date: Fri, 23 Jun 2017 11:18:27 +0530
+Subject: [PATCH] Added SPI-NOR support
+
+---
+ board/seco/SBC_984/mx6seco_984.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/board/seco/SBC_984/mx6seco_984.c b/board/seco/SBC_984/mx6seco_984.c
+index b6f9d67..c2cd93b 100755
+--- a/board/seco/SBC_984/mx6seco_984.c
++++ b/board/seco/SBC_984/mx6seco_984.c
+@@ -102,6 +102,11 @@ static void setup_spinor(void) {
+ 	gpio_direction_output(IMX_GPIO_NR(3, 19), 0);
+ }
+ 
++int board_spi_cs_gpio(unsigned bus, unsigned cs)
++{
++	return (bus == 0 && cs == 0) ? (IMX_GPIO_NR(3, 19)) : cs >> 8;
++}
++
+ #endif   /*  CONFIG_SYS_USE_SPINOR  */
+ /*  __________________________________________________________________________
+  * |__________________________________________________________________________|
+-- 
+2.0.4
+
