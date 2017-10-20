@@ -1,0 +1,50 @@
+From e64e259eeb09fbab3161e1be87f729a720e03b9f Mon Sep 17 00:00:00 2001
+From: vivek <vi.kumbhar24@gmail.com>
+Date: Wed, 18 Jan 2017 14:25:26 +0530
+Subject: [PATCH] Fixed the RTC chip not found error
+
+---
+ arch/arm/boot/dts/imx6qdl-seco_uq7_962.dtsi | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx6qdl-seco_uq7_962.dtsi b/arch/arm/boot/dts/imx6qdl-seco_uq7_962.dtsi
+index ff09e9c..6783996 100755
+--- a/arch/arm/boot/dts/imx6qdl-seco_uq7_962.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-seco_uq7_962.dtsi
+@@ -420,11 +420,12 @@
+ 				MX6QDL_PAD_DISP0_DAT2__ECSPI3_MISO           0x100b1
+ 				MX6QDL_PAD_DISP0_DAT1__ECSPI3_MOSI           0x100b1
+ 				MX6QDL_PAD_DISP0_DAT0__ECSPI3_SCLK           0x100b1
+-				/*  CS SPI 3  */
++				/*  CS SPI 2  */
+ 				MX6QDL_PAD_DISP0_DAT3__GPIO4_IO24            0x80000000
+ 			>;
+ 		};
+ 
++
+ /*  __________________________________________________________________________
+  * |________________________________ USDHC ___________________________________|
+  */
+@@ -703,12 +704,13 @@
+ 	pinctrl-names           = "default";
+ 	pinctrl-0               = <&pinctrl_ecspi3>;
+ 	status                  = "okay";
+-	rtc: pcf2123@1 {
+-                compatible        = "nxp,rtc-pcf2123";
+-                reg               = <1>;
+-                spi-max-frequency = <1000000>;
+-                spi-cs-high;
+-    	};
++
++        rtc: pcf2123@1 {
++		compatible        = "nxp,rtc-pcf2123";
++		reg               = <0>;
++		spi-max-frequency = <1000000>;
++		spi-cs-high;
++       };
+ };
+ /*  __________________________________________________________________________
+  * |__________________________________________________________________________|
+-- 
+2.0.4
+
