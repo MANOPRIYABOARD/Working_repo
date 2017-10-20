@@ -1,0 +1,45 @@
+From a963ab691f54d001cbb54c5e4badf77f57549293 Mon Sep 17 00:00:00 2001
+From: Mathanraj <mathan.raj@seco.com>
+Date: Fri, 23 Jun 2017 11:31:05 +0530
+Subject: [PATCH] RTC PinMuxing support
+
+---
+ board/seco/SBC_984/pin_muxing_984.h | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/board/seco/SBC_984/pin_muxing_984.h b/board/seco/SBC_984/pin_muxing_984.h
+index e30365a..3ad9394 100755
+--- a/board/seco/SBC_984/pin_muxing_984.h
++++ b/board/seco/SBC_984/pin_muxing_984.h
+@@ -122,11 +122,8 @@ iomux_v3_cfg_t const usdhc3_pads[] = {
+  */
+ 
+ #ifdef CONFIG_SYS_USE_SPINOR
++
+ iomux_v3_cfg_t const ecspi1_pads[] = {
+-//	MX6_PAD_KEY_COL0__ECSPI1_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL),
+-//	MX6_PAD_KEY_COL1__ECSPI1_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL),
+-//	MX6_PAD_KEY_ROW0__ECSPI1_MOSI | MUX_PAD_CTRL(SPI_PAD_CTRL),
+-//	MX6_PAD_KEY_ROW1__GPIO4_IO09 | MUX_PAD_CTRL(NO_PAD_CTRL),
+ 
+ 	MX6_PAD_EIM_D17__ECSPI1_MISO  | MUX_PAD_CTRL(SPI_PAD_CTRL),
+ 	MX6_PAD_EIM_D18__ECSPI1_MOSI  | MUX_PAD_CTRL(SPI_PAD_CTRL),
+@@ -134,6 +131,15 @@ iomux_v3_cfg_t const ecspi1_pads[] = {
+ 	MX6_PAD_EIM_D19__GPIO3_IO19   | MUX_PAD_CTRL(NO_PAD_CTRL),
+ 
+ };
++
++iomux_v3_cfg_t const ecspi3_pads[] = {
++
++	MX6_PAD_DISP0_DAT0__ECSPI3_SCLK  | MUX_PAD_CTRL(SPI_PAD_CTRL),
++	MX6_PAD_DISP0_DAT1__ECSPI3_MOSI  | MUX_PAD_CTRL(SPI_PAD_CTRL),
++	MX6_PAD_DISP0_DAT2__ECSPI3_MISO  | MUX_PAD_CTRL(SPI_PAD_CTRL),
++	MX6_PAD_DISP0_DAT3__GPIO4_IO24   | MUX_PAD_CTRL(NO_PAD_CTRL),
++
++};
+ #endif  /*  CONFIG_SYS_USE_SPINOR  */
+ 
+ /*  __________________________________________________________________________
+-- 
+2.0.4
+
