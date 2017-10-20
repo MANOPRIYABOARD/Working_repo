@@ -1,0 +1,115 @@
+--- /home/mathanmurugan/meta-seco-bsp-release-2-0/seco-yocto_configurator.sh	2017-10-20 10:42:47.720528480 +0530
++++ seco-yocto_configurator.sh	2017-10-20 16:25:39.279824041 +0530
+@@ -5,6 +5,7 @@
+ type_uSBC="uSBC"
+ type_A62="A62"
+ type_B08="B08"
++type_A75="uQ7-J"
+ 
+ type_cpu_q="QUAD"
+ type_cpu_dl="DUAL_LITE"
+@@ -219,6 +220,7 @@
+ 			2 "1Giga, bus size 64, active CS = 1 (256Mx4)" ${VAL[2]} \
+ 			3 "2Giga, bus size 64, active CS = 1 (512Mx4)" ${VAL[3]} \
+  			4 "4Giga, bus size 64, active CS = 2 (512Mx8) - for QSEVEN only" ${VAL[4]} \
++			5 "256M,  bus size 16, active CS = 1 (256Mx1)" ${VAL[5]} \
+ 			2>&1 1>&3)
+ 	 
+ 	# close fd
+@@ -234,13 +236,14 @@
+ board_type_view() {
+ 	# open fd
+ 	exec 3>&1
+-	VAL=(off off off off off)
++	VAL=(off off off off off off)
+ 	case "$BOARD" in
+ 			"$type_Qseven") VAL[0]=on;;
+ 		   	"$type_uQseven") VAL[1]=on;;
+ 			"$type_A62") VAL[2]=on;;
+ 			"$type_uSBC") VAL[3]=on;;
+ 			"$type_B08") VAL[4]=on;;
++			"$type_A75") VAL[5]=on;;
+ 	esac
+ 	# Store data to $VALUES variable
+ 	SELECTION=$(dialog --title "Board type" \
+@@ -254,6 +257,7 @@
+ 			$type_A62 "A62 Single board" ${VAL[2]} \
+ 			$type_uSBC "984 Single board" ${VAL[3]} \
+ 			$type_B08 "B08 Single board" ${VAL[4]} \
++			$type_A75 "Micro Qseven-J board" ${VAL[5]}\
+ 			2>&1 1>&3)
+ 	 
+ 	# close fd
+@@ -587,6 +591,9 @@
+ 		echo "RAM size selected: 4Giga, bus size 64, active CS = 2 (512Mx8) - for QSEVEN only"
+ 		SUFFIX=${SUFFIX}-4GB
+ 		CONFIG_RAM="CONFIG_SECOMX6_4GB_8x512=y"
++	elif [ "${MEM_SIZE}" == "5" ]; then
++                echo "RAM size selected: 256M, bus size 16, active CS = 1 (256Mx1)"
++                SUFFIX=${SUFFIX}-256MB
+ 	else
+ 		echo "ERROR: wrong DDR size selected"
+ 		exit 0
+@@ -603,6 +610,10 @@
+ 		echo "Board type selected: micro Qseven module"
+ 		SUFFIX=${SUFFIX}-uQ7
+ 		CONFIG_BOARD="CONFIG_TARGET_MX6SECO_UQ7_962=y"
++	elif [ "${BOARD}" == "${type_A75}" ]; then
++		echo "Board type selected: micro Qseven A75-J module"
++		SUFFIX=${SUFFIX}-uQ7-j
++		CONFIG_BOARD="CONFIG_TARGET_MX6SECO_UQ7_j_A75=y"
+ 	elif [ "${BOARD}" == "${type_uSBC}" ]; then
+                 echo "Board type selected: Micro Single Board"
+                 SUFFIX=${SUFFIX}-uSBC
+@@ -725,6 +736,36 @@
+                         UBOOT_BOARD_CONF="mx6s_uq7_962_512MBx2_defconfig"
+ 		fi
+             fi
++	elif [ "${BOARD}" == "${type_A75}" ]; then
++            if [ "${CPU_TYPE}" == "${type_cpu_q}" ]; then
++		if [ "${MEM_SIZE}" == "0" ] ; then
++                        UBOOT_BOARD_CONF="mx6q_uq7-j_A75_512MB_defconfig"
++                elif [ "${MEM_SIZE}" == "1" ] ; then
++                        UBOOT_BOARD_CONF="mx6q_uq7-j_A75_512MBx2_defconfig"
++                elif [ "${MEM_SIZE}" == "2" ] ; then
++                        UBOOT_BOARD_CONF="mx6q_uq7-j_A75_256MBx4_defconfig"
++                elif [ "${MEM_SIZE}" == "3" ] ; then
++                        UBOOT_BOARD_CONF="mx6q_uq7-j_A75_2GB_defconfig"
++                fi
++            elif [ "${CPU_TYPE}" == "${type_cpu_dl}" ]; then
++		if [ "${MEM_SIZE}" == "0" ] ; then
++                        UBOOT_BOARD_CONF="mx6dl_uq7-j_A75_512MB_defconfig"
++                elif [ "${MEM_SIZE}" == "1" ] ; then
++                        UBOOT_BOARD_CONF="mx6dl_uq7-j_A75_512MBx2_defconfig"
++                elif [ "${MEM_SIZE}" == "2" ] ; then
++                        UBOOT_BOARD_CONF="mx6dl_uq7-j_A75_256MBx4_defconfig"
++                elif [ "${MEM_SIZE}" == "3" ] ; then
++                        UBOOT_BOARD_CONF="mx6dl_uq7-j_A75_2GB_defconfig"
++                fi
++            elif [ "${CPU_TYPE}" == "${type_cpu_s}" ]; then
++		if [ "${MEM_SIZE}" == "0" ] ; then
++                        UBOOT_BOARD_CONF="mx6s_uq7-j_A75_512MB_defconfig"
++                elif [ "${MEM_SIZE}" == "1" ] ; then
++                        UBOOT_BOARD_CONF="mx6s_uq7-j_A75_512MBx2_defconfig"
++		elif [ "${MEM_SIZE}" == "5" ] ; then
++                        UBOOT_BOARD_CONF="mx6s_uq7-j_A75_265MBx1_defconfig"
++		fi
++           fi	
+ 	elif [ "${BOARD}" == "${type_uSBC}" ]; then
+             if [ "${CPU_TYPE}" == "${type_cpu_q}" ]; then
+ 		if [ "${MEM_SIZE}" == "0" ] ; then
+@@ -813,6 +854,14 @@
+             elif [ "${CPU_TYPE}" == "${type_cpu_s}" ]; then
+                 DTB_CONF="imx6dl-seco_uq7_962.dtb"
+             fi
++	elif [ "${BOARD}" == "${type_A75}" ]; then
++            if [ "${CPU_TYPE}" == "${type_cpu_q}" ]; then
++                DTB_CONF="imx6q-seco_uq7-j_A75.dtb"
++            elif [ "${CPU_TYPE}" == "${type_cpu_dl}" ]; then
++                DTB_CONF="imx6dl-seco_uq7-j_A75.dtb"
++            elif [ "${CPU_TYPE}" == "${type_cpu_s}" ]; then
++                DTB_CONF="imx6dl-seco_uq7-j_A75.dtb"
++            fi
+ 	elif [ "${BOARD}" == "${type_uSBC}" ]; then
+             if [ "${CPU_TYPE}" == "${type_cpu_q}" ]; then
+                 DTB_CONF="imx6q-seco_SBC_984.dtb"
