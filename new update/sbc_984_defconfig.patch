@@ -1,0 +1,26 @@
+From 5062c7163aa292a8939d495c5adf7118aac9e8a9 Mon Sep 17 00:00:00 2001
+From: Mathanraj <mathan.raj@seco.com>
+Date: Fri, 23 Jun 2017 11:45:53 +0530
+Subject: [PATCH] Added the defconfig file
+
+---
+ configs/secomx6_USBC_defconfig | 7 +++++++
+ 1 file changed, 7 insertions(+)
+ create mode 100755 configs/secomx6_USBC_defconfig
+
+diff --git a/configs/secomx6_USBC_defconfig b/configs/secomx6_USBC_defconfig
+new file mode 100755
+index 0000000..08e3897
+--- /dev/null
++++ b/configs/secomx6_USBC_defconfig
+@@ -0,0 +1,7 @@
++CONFIG_ARM=y
++CONFIG_SECOMX6Q=y
++CONFIG_TARGET_MX6SECO_USBC_984=y
++CONFIG_DM=y
++CONFIG_DM_THERMAL=y
++
++CONFIG_CMD_SECO_CONFIG=y
+-- 
+2.0.4
+
