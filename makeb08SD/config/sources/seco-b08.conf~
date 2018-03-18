@@ -1,0 +1,66 @@
+BOOTSOURCE='https://github.com/MathanrajMurugan/Working_repo/tree/master/u-boot-2015-04-secoboards-imx6sx-rel'
+BOOTDIR='u-boot-seco-b08'
+BOOTPATCHDIR='u-boot-seco-b08'
+BOOTSCRIPT="boot-$BOARD.cmd:boot.cmd"
+BOOTENV_FILE='seco-b08-default.txt'
+HAS_UUID_SUPPORT=yes
+UBOOT_TARGET_MAP=';;SPL u-boot.img'
+UBOOT_USE_GCC='> 5.0'
+
+case $BOARD in
+	seco-b08)
+	BOOTBRANCH='branch:master'
+	SERIALCON=ttymxc1
+	;;
+
+	#udoo-neo)
+	#BOOTBRANCH='branch:2015.04.imx'
+	#SERIALCON=ttymxc0
+	#;;
+esac
+
+case $BRANCH in
+	default)
+	KERNELSOURCE='https://github.com/MathanrajMurugan/Working_repo/tree/master/linux-4-1-15-secoboards-imx6sx-rel'
+	KERNELBRANCH='branch:master'
+	KERNELDIR='linux-seco-b08'
+
+	KERNEL_USE_GCC='> 6.0'
+	;;
+
+	#next)
+	#KERNELSOURCE='https://github.com/patrykk/linux-udoo'
+	#KERNELBRANCH='branch:4.4-5.0.11.p7.3'
+	#KERNELDIR='linux-udoo-next'
+
+	#KERNEL_USE_GCC='> 6.0'
+	#;;
+esac
+
+CPUMIN=392000
+CPUMAX=996000
+GOVERNOR=interactive
+
+write_uboot_platform()
+{
+	dd if=$1/SPL of=$2 bs=1k seek=1 status=noxfer > /dev/null 2>&1
+	dd if=$1/u-boot.img of=$2 bs=1k seek=69 conv=fsync > /dev/null 2>&1
+}
+
+family_tweaks()
+{
+	sed 's/wlan0/wlan2/' -i $SDCARD/etc/network/interfaces.default
+	sed 's/wlan0/wlan2/' -i $SDCARD/etc/network/interfaces.bonding
+	sed 's/wlan0/wlan2/' -i $SDCARD/etc/network/interfaces.hostapd
+	if [[ $BOARD == udoo-neo ]]; then
+		# SD card is elsewhere
+		sed 's/mmcblk0p1/mmcblk1p1/' -i $SDCARD/etc/fstab
+		# firmware for M4
+		# TODO: move to the u-boot package as a patch?
+		mkdir -p $SDCARD/boot/bin/
+		cp $SRC/packages/blobs/udoo/m4startup.fw* $SDCARD/boot/bin/
+		# fix for BT
+		install_deb_chroot "$SRC/packages/blobs/udoo/udooneo-bluetooth_1.2-1_armhf.deb"
+
+	fi
+}
